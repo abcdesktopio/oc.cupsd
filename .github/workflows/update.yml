@@ -32,7 +32,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: oc.cupsd.18.04
           push: true
           tags: |
             abcdesktopio/oc.cupsd.18.04:latest
