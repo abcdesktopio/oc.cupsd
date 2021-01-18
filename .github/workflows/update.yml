@@ -34,4 +34,4 @@ jobs:
           context: .
           push: true
           tags: |
-            abcdesktopio/oc.cupsd.18.04:latest
+            abcdesktopio/oc.cupsd.18.04:dev
