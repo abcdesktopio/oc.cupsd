@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-MAINTAINER Alexandre DEVELY
+LABEL MAINTAINER="Alexandre DEVELY"
 
 LABEL vcs-type "git"
 LABEL vcs-url  "https://github.com/abcdesktopio/oc.user.18.04/oc.cupsd.18.04"
