@@ -1,4 +1,4 @@
-# oc.cupsd.18.04
+# oc.cupsd
 
 ![Update oc.cupsd.18.04](https://github.com/abcdesktopio/oc.cupsd.18.04/workflows/Update%20oc.cupsd.18.04/badge.svg)
 ![Docker Stars](https://img.shields.io/docker/stars/abcdesktopio/oc.cupsd.18.04.svg) 
