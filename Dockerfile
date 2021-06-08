@@ -1,17 +1,75 @@
-FROM ubuntu:18.04
+# defaul TAG is dev
+ARG TAG=dev
+# Default release is 18.04
+ARG BASE_IMAGE_RELEASE=18.04
+# Default base image 
+ARG BASE_IMAGE=ubuntu:18.04
 
+
+
+
+# --- BEGIN node_modules_builder ---
+FROM $BASE_IMAGE as node_modules_builder
+
+
+#Install curl
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	gpg-agent \
+	gnupg \
+        curl  \
+    && apt-get clean                    \
+    && rm -rf /var/lib/apt/lists/*
+
+# this package nodejs include npm 
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \ 
+	&& apt-get update && 				\
+	apt-get install -y --no-install-recommends	\
+        	nodejs					\
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+
+#Install yarn
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	yarn \
+    && apt-get clean                    \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY composer /composer
+
+WORKDIR /composer/node/file-service
+RUN yarn install 
+
+WORKDIR /composer/node/printer-service
+RUN yarn install
+
+
+
+
+
+# --- START Build image ---
+FROM $BASE_IMAGE
+
+
+# Add LABELS
 LABEL MAINTAINER="Alexandre DEVELY"
-
 LABEL vcs-type "git"
-LABEL vcs-url  "https://github.com/abcdesktopio/oc.user.18.04/oc.cupsd.18.04"
+LABEL vcs-url  "https://github.com/abcdesktopio/oc.user.18.04/oc.cupsd"
 LABEL vcs-ref  "master"
 LABEL release  "5"
 LABEL version  "1.2"
 LABEL architecture "x86_64"
 
+
+# define env
+ENV DEBCONF_FRONTEND noninteractive
+ENV TERM linux
+
 ## 
-# install fonts and themes
-RUN DEBIAN_FRONTEND=noninteractive  apt-get update && apt-get install -y --no-install-recommends \
+# install fonts 
+RUN apt-get update && apt-get install -y --no-install-recommends \
 	xfonts-base			\
         xfonts-encodings                \
         xfonts-utils                    \
@@ -37,28 +95,45 @@ RUN DEBIAN_FRONTEND=noninteractive  apt-get update && apt-get install -y --no-in
 	fonts-ipafont-gothic            \
         fonts-wqy-zenhei                \
         fonts-tlwg-loma-otf             \
-        && apt-get clean
+        && apt-get clean		\
+	&& rm -rf /var/lib/apt/lists/*
 
 
 
-# cups-pdf: pdf printer support
-# scrot: screenshot tools
-# smbclient need to install smb printer
-# cups: printer support
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
+# cups-pdf:  pdf printer support
+# smbclient: need to install smb printer
+# cups:      printer support
+RUN apt-get update && apt-get install -y --no-install-recommends \
         smbclient	\
 	cups-pdf 	\
-	scrot  		\
         cups		\
-        && apt-get clean
+        && apt-get clean\
+	&& rm -rf /var/lib/apt/lists/*
 
 # apt install iproute2 install ip command
-# iputils-ping and vin can be removed
-RUN DEBIAN_FRONTEND=noninteractive  apt-get update && apt-get install -y  --no-install-recommends      \
-        iproute2                                                                \
-	iputils-ping								\
-        && apt-get clean
+# install supervisor
+RUN apt-get update && apt-get install -y  --no-install-recommends      \
+	supervisor		\
+        iproute2                \
+	curl			\
+	gpg-agent		\
+	gnupg			\
+        && apt-get clean	\
+	&& rm -rf /var/lib/apt/lists/*	
 
+
+
+# this package nodejs include npm 
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \ 
+	&& apt-get update && 				\
+	apt-get install -y --no-install-recommends	\
+        	nodejs					\
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+
+
+COPY --from=node_modules_builder /composer  /composer
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
