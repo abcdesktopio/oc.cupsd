@@ -165,8 +165,7 @@ RUN echo `date` > /etc/build.date
 RUN mkdir -p 	/var/log/desktop                            \
         	/var/run/desktop                            \
         	/composer/run
-
-COPY etc/cups /etc/cups
+COPY etc /etc
 RUN  chown -R lp:root /etc/cups/ppd /etc/cups/printers.conf
 USER root
 
