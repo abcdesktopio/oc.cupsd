@@ -11,18 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     # runs-on: self-hosted
     steps:
-      - name: Clone sources
-        run: |
-          rm -rf ..?* .[!.]* *
-          git clone "https://github.com/abcdesktopio/oc.cupsd.git" .
-          git submodule update --init --recursive --remote
-          ls -la /composer/node/printer-service/
+      # - name: Clone sources
+      #  run: |
+      #    rm -rf ..?* .[!.]* *
+      #    git clone "https://github.com/abcdesktopio/oc.cupsd.git" .
+      #    git submodule update --init --recursive --remote
+      #    ls -la /composer/node/printer-service/
           
-      # - uses: actions/checkout@v2
-      #  with:
-      #    # Repository name with owner. For example, actions/checkout
-      #    # Default: ${{ github.repository }}
-      #    submodules: true
+      - uses: actions/checkout@v2
+        with:
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          submodules: true
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
