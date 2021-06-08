@@ -14,8 +14,9 @@ FROM $BASE_IMAGE as node_modules_builder
 
 #Install curl
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	gpg-agent \
+	software-properties-common \
 	gnupg \
+	gpg-agent               \
         curl  \
     && apt-get clean                    \
     && rm -rf /var/lib/apt/lists/*
@@ -38,6 +39,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY composer /composer
+
+# Add nodejs service
+WORKDIR /composer/node/common-libraries
+RUN   yarn install
 
 WORKDIR /composer/node/file-service
 RUN yarn install 
@@ -117,6 +122,7 @@ RUN apt-get update && apt-get install -y  --no-install-recommends      \
         iproute2                \
 	curl			\
 	gpg-agent		\
+        software-properties-common \
 	gnupg			\
         && apt-get clean	\
 	&& rm -rf /var/lib/apt/lists/*	
