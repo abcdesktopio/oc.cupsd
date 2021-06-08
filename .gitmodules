@@ -2,3 +2,15 @@
 	path = etc/cups
 	url = https://github.com/abcdesktopio/cups.git
 	branch = main 
+[submodule "composer/node/common-libraries"]
+	path = composer/node/common-libraries
+	url = https://github.com/abcdesktopio/oc.user.libraries.git
+	branch = main
+[submodule "composer/node/printer-service"]
+	path = composer/node/printer-service
+	url = https://github.com/abcdesktopio/printer-service.git
+	branch = main
+[submodule "composer/node/file-service"]
+	path = composer/node/file-service
+	url = https://github.com/abcdesktopio/file-service.git
+	branch = main
