@@ -14,8 +14,8 @@ jobs:
       - name: Clone sources
         run: |
           rm -rf ..?* .[!.]* *
-          git -c http.extraheader="Authorization: basic ${{ secrets.TOKEN }}" clone "https://github.com/abcdesktopio/oc.cupsd.18.04.git" .
-          git -c http.extraheader="Authorization: basic ${{ secrets.TOKEN }}" submodule update --init --recursive --remote
+          git clone "https://github.com/abcdesktopio/oc.cupsd.git" .
+          git submodule update --init --recursive --remote
           ls -la /composer/node/printer-service/
           
       # - uses: actions/checkout@v2
