@@ -8,6 +8,8 @@ export CONTAINER_IP_ADDR
 
 # replace CONTAINER_IP_ADDR in listen for pulseaudio
 sed -i "s/localhost:631/$CONTAINER_IP_ADDR:631/g" /etc/cups/cupsd.conf 
+
+# kerberos
 if [ -f /tmp/krb5cc_4096 ]; then
 	# copy the krb5cc from ballon to root 
         cp /tmp/krb5cc_4096 /tmp/krb5cc_0
