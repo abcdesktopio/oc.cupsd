@@ -2,7 +2,7 @@
 
 export ABCDESKTOP_RUN_DIR='/composer/run'
 
-CONTAINER_IP_ADDR=$(ip route get 1 | awk '{print $7;exit}')
+CONTAINER_IP_ADDR=$(hostname -i)
 echo "Container local ip addr is $CONTAINER_IP_ADDR"
 export CONTAINER_IP_ADDR
 
