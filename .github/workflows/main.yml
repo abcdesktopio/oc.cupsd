@@ -1,15 +1,14 @@
-name: Update oc.cupsd.18.04
+name: Update oc.cupsd.18
 
 on:
   repository_dispatch:
-    types: dispatch-from-cups
+    types: [dispatch-from-cups, dispatch-from-file-service]
   push:
     branches:
       - main
 jobs:
   build:
     runs-on: ubuntu-latest
-    # runs-on: self-hosted
     steps: 
       - uses: actions/checkout@v2
         with:
