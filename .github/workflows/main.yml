@@ -14,11 +14,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/checkout@v2
-        with:
-          # Repository name with owner. For example, actions/checkout
-          # Default: ${{ github.repository }}
-          submodules: recursive
+      - name: Clone repository
+        uses: actions/checkout@v2
+
+      - name: Clone submodules
+        run: git submodule update --init --recursive --remote
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
