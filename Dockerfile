@@ -61,7 +61,7 @@ FROM $BASE_IMAGE
 # Add LABELS
 LABEL MAINTAINER="Alexandre DEVELY"
 LABEL vcs-type "git"
-LABEL vcs-url  "https://github.com/abcdesktopio/oc.user.18.04/oc.cupsd"
+LABEL vcs-url  "https://github.com/abcdesktopio/oc.cupsd"
 LABEL vcs-ref  "master"
 LABEL release  "5"
 LABEL version  "1.2"
