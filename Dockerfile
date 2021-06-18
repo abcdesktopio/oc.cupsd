@@ -119,7 +119,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # install supervisor
 RUN apt-get update && apt-get install -y  --no-install-recommends      \
 	supervisor		\
-        iproute2                \
 	curl			\
 	gpg-agent		\
         software-properties-common \
