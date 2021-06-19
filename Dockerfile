@@ -170,6 +170,9 @@ USER root
 
 CMD /docker-entrypoint.sh
 
+# DEFAULT FILE_SERVICE_TCP_PORT is changed use 29782
+# FILE_SERVICE_TCP_PORT 		29782
+
 # expose cupsd tcp port
-EXPOSE 631 
+EXPOSE 631 29782
 
