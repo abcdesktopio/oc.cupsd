@@ -30,5 +30,12 @@ else
 fi
 export DISABLE_REMOTEIP_FILTERING
 
+
+
+if [ ! -d /home/balloon/.printer-queue ]; then
+	mkdir -p /home/balloon/.printer-queue
+fi
+
+
 # start supervisord
 /usr/bin/supervisord --pidfile /var/run/desktop/supervisord.pid --nodaemon --configuration /etc/supervisord.conf
