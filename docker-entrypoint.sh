@@ -18,6 +18,11 @@ fi
 # export VAR to running procces
 export KUBERNETES_SERVICE_HOST
 
+
+if [ -z "$DISABLE_REMOTEIP_FILTERING" ]; then
+        DISABLE_REMOTEIP_FILTERING=disabled
+fi
+
 if [ "$DISABLE_REMOTEIP_FILTERING"=="enabled" ]; then
 	echo "DISABLE_REMOTEIP_FILTERING=$DISABLE_REMOTEIP_FILTERING" >> /var/log/desktop/config.log
 else
