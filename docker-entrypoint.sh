@@ -36,6 +36,9 @@ if [ ! -d /home/balloon/.printer-queue ]; then
 	mkdir -p /home/balloon/.printer-queue
 fi
 
+# always set as owner of /home/balloon/.printer-queue
+# home dir could be on another volume
+chown balloon:balloon /home/balloon/.printer-queue
 
 # start supervisord
 /usr/bin/supervisord --pidfile /var/run/desktop/supervisord.pid --nodaemon --configuration /etc/supervisord.conf
