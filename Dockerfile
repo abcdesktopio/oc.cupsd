@@ -129,7 +129,7 @@ RUN apt-get update && apt-get install -y  --no-install-recommends      \
 
 
 # this package nodejs include npm 
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \ 
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \ 
 	&& apt-get update && 				\
 	apt-get install -y --no-install-recommends	\
         	nodejs					\
