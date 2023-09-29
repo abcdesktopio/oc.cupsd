@@ -39,9 +39,9 @@ jobs:
       - name: Checkout repository cupds confiuguration file
         uses: actions/checkout@v4
         with:
-          repository: 'abcdesktopio/cupds'
+          repository: 'abcdesktopio/cups'
           ref: 'main'
-          path: 'etc/cupds'
+          path: 'etc/cups'
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
