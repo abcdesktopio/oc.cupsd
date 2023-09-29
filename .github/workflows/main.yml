@@ -36,6 +36,12 @@ jobs:
           repository: 'abcdesktopio/printer-service'
           ref: 'main'
           path: 'composer/node/printer-service'
+      - name: Checkout repository cupds confiuguration file
+        uses: actions/checkout@v4
+        with:
+          repository: 'abcdesktopio/cupds'
+          ref: 'main'
+          path: 'etc/cupds'
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
