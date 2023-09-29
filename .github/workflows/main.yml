@@ -2,14 +2,16 @@ name: Update oc.cupsd
 
 on:
   repository_dispatch:
-    types: [
-      dispatch-from-cups,
-      dispatch-from-file-service,
-      dispatch-from-printer-service
-    ]
+    types:
+      - dispatch-from-cups
+      - dispatch-from-file-service
+      - dispatch-from-printer-service
   push:
     branches:
       - main
+env:
+    imagetag: "${{ github.event.client_payload.ref || github.ref_name }}"
+    
 jobs:
   build:
   runs-on: ubuntu-latest
