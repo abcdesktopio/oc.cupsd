@@ -71,8 +71,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ubuntustudio-fonts              \
    	libfontconfig 			\
     	libfreetype6 			\
-    	ttf-ubuntu-font-family 		\
-	ttf-dejavu-core			\
         fonts-freefont-ttf		\
   	fonts-croscore                  \
         fonts-dejavu-core               \
@@ -87,6 +85,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	fonts-ipafont-gothic            \
         fonts-wqy-zenhei                \
         fonts-tlwg-loma-otf             \
+	gsfonts-x11			\
         && apt-get clean		\
 	&& rm -rf /var/lib/apt/lists/*
 
