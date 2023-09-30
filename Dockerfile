@@ -1,7 +1,5 @@
 # defaul TAG is dev
 ARG TAG=dev
-# Default release is 18.04
-ARG BASE_IMAGE_RELEASE=18.04
 # Default base image 
 ARG BASE_IMAGE=ubuntu:22.04
 
