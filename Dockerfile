@@ -119,20 +119,18 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 # Add 
 RUN adduser root lpadmin 
-
 # Next command use $BUSER context
-ENV BUSER balloon
+# ENV BUSER balloon
 # RUN adduser --disabled-password --gecos '' $BUSER
 # RUN id -u $BUSER &>/dev/null || 
-RUN groupadd --gid 4096 $BUSER
-RUN useradd --create-home --shell /bin/bash --uid 4096 -g $BUSER --groups lpadmin $BUSER
+# RUN groupadd --gid 4096 $BUSER
+# RUN useradd --create-home --shell /bin/bash --uid 4096 -g $BUSER --groups lpadmin $BUSER
 # create an ubuntu user
 # PASS=`pwgen -c -n -1 10`
 # PASS=ballon
 # Change password for user balloon
-RUN echo "balloon:lmdpocpetit" | chpasswd $BUSER
+# RUN echo "balloon:lmdpocpetit" | chpasswd $BUSER
 #
-
 RUN echo `date` > /etc/build.date
 
 # LOG AND PID SECTION
@@ -141,14 +139,12 @@ RUN mkdir -p 	/var/log/desktop                            \
         	/composer/run
 COPY etc /etc
 RUN  chown -R lp:root /etc/cups/ppd /etc/cups/printers.conf
-USER root
 
 CMD /docker-entrypoint.sh
 
 # DEFAULT FILE_SERVICE_TCP_PORT use 29782
 # FILE_SERVICE_TCP_PORT 29782
 # CUPSD PORT 631
-
 # expose cupsd tcp port
 EXPOSE 631 29782
 
