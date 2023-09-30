@@ -119,18 +119,8 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 # Add 
 RUN adduser root lpadmin 
-# Next command use $BUSER context
-# ENV BUSER balloon
-# RUN adduser --disabled-password --gecos '' $BUSER
-# RUN id -u $BUSER &>/dev/null || 
-# RUN groupadd --gid 4096 $BUSER
-# RUN useradd --create-home --shell /bin/bash --uid 4096 -g $BUSER --groups lpadmin $BUSER
-# create an ubuntu user
-# PASS=`pwgen -c -n -1 10`
-# PASS=ballon
-# Change password for user balloon
-# RUN echo "balloon:lmdpocpetit" | chpasswd $BUSER
-#
+ENV PRINTERQUEUE=/var/spool/cups-pdf/ANONYMOUS
+RUN mkdir -p $PRINTERQUEUE && chown root:lp $PRINTERQUEUE 
 RUN echo `date` > /etc/build.date
 
 # LOG AND PID SECTION
