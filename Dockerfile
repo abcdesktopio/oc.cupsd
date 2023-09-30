@@ -1,7 +1,7 @@
 # defaul TAG is dev
 ARG TAG=dev
 # Default base image 
-ARG BASE_IMAGE=ubuntu:22.04
+ARG BASE_IMAGE=ubuntu:20.04
 
 # --- BEGIN node_modules_builder ---
 FROM $BASE_IMAGE as node_modules_builder
