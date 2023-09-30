@@ -25,9 +25,10 @@ RUN  mkdir -p /etc/apt/keyrings && \
      echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
      apt-get update && \
      apt-get install -y --no-install-recommends nodejs && \
-     npm -g install yarn && \
      apt-get clean && \
      rm -rf /var/lib/apt/lists/*
+
+RUN npm -g install yarn
 
 COPY composer /composer
 
