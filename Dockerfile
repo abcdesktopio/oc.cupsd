@@ -33,14 +33,10 @@ RUN npm -g install yarn
 COPY composer /composer
 
 # Add nodejs service
-WORKDIR /composer/node/common-libraries
-RUN  yarn install --production=true
+RUN cd /composer/node/common-libraries && npm install --omit=dev && \
+    cd /composer/node/file-service && npm install --omit=dev && \
+    cd /composer/node/printer-service && npm install --omit=dev
 
-WORKDIR /composer/node/file-service
-RUN yarn install --production=true
-
-WORKDIR /composer/node/printer-service
-RUN yarn install --production=true
 
 # --- START Build image ---
 FROM $BASE_IMAGE
@@ -49,10 +45,6 @@ FROM $BASE_IMAGE
 LABEL MAINTAINER="Alexandre DEVELY"
 LABEL vcs-type "git"
 LABEL vcs-url  "https://github.com/abcdesktopio/oc.cupsd"
-LABEL vcs-ref  "master"
-LABEL release  "5"
-LABEL version  "1.2"
-LABEL architecture "x86_64"
 
 
 # define env
