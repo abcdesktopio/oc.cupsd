@@ -85,8 +85,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # cups-pdf:  pdf printer support
 # smbclient: need to install smb printer
 # cups:      printer support
+#         smbclient
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        smbclient	\
 	cups-pdf 	\
         cups		\
         && apt-get clean\
