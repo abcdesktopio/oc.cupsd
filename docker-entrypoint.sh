@@ -10,14 +10,17 @@ export CONTAINER_IP_ADDR
 sed -i "s/localhost:631/$CONTAINER_IP_ADDR:631/g" /etc/cups/cupsd.conf 
 
 # kerberos
-if [ -f /tmp/krb5cc_4096 ]; then
-	# copy the krb5cc from ballon to root 
-        cp /tmp/krb5cc_4096 /tmp/krb5cc_0
-fi
+#if [ -f /tmp/krb5cc_4096 ]; then
+#	# copy the krb5cc from ballon to root 
+#        cp /tmp/krb5cc_4096 /tmp/krb5cc_0
+#fi
 
 # export VAR to running procces
 export KUBERNETES_SERVICE_HOST
 
+# overwrite HOME
+# to use cups-pdf ANONYMOUS
+export HOME=/var/spool/cups-pdf/ANONYMOUS
 
 if [ -z "$DISABLE_REMOTEIP_FILTERING" ]; then
         DISABLE_REMOTEIP_FILTERING=disabled
@@ -29,8 +32,6 @@ else
 	DISABLE_REMOTEIP_FILTERING=disabled
 fi
 export DISABLE_REMOTEIP_FILTERING
-
-
 
 if [ ! -d /home/balloon/.printer-queue ]; then
 	mkdir -p /home/balloon/.printer-queue
