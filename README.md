@@ -9,7 +9,7 @@
 Printer service for abcdesktop.io for kurbernetes
 Printer servcice embedded :
 - file-service from https://github.com/abcdesktopio/file-service
-- printer-service from https://github.com/abcdesktopio/file-service
+- printer-service from https://github.com/abcdesktopio/printer-service
 - common-libraries from https://github.com/abcdesktopio/oc.user.libraries
 - cups configuration files from https://github.com/abcdesktopio/cups
 
