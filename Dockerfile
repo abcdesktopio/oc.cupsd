@@ -26,8 +26,6 @@ RUN  mkdir -p /etc/apt/keyrings && \
      apt-get clean && \
      rm -rf /var/lib/apt/lists/*
 
-RUN npm -g install yarn
-
 COPY composer /composer
 
 # Add nodejs service
