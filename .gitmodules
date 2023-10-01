@@ -1,7 +1,3 @@
-[submodule "etc/cups"]
-	path = etc/cups
-	url = https://github.com/abcdesktopio/cups.git
-	branch = main 
 [submodule "composer/node/common-libraries"]
 	path = composer/node/common-libraries
 	url = https://github.com/abcdesktopio/oc.user.libraries.git
