@@ -1,37 +1,5 @@
-# defaul TAG is dev
-ARG TAG=dev
 # Default base image 
-ARG BASE_IMAGE=ubuntu:20.04
-
-# --- BEGIN node_modules_builder ---
-FROM $BASE_IMAGE as node_modules_builder
-
-ENV NODE_MAJOR=18
-
-#Install curl
-RUN apt-get update && apt-get install -y --no-install-recommends \
-	software-properties-common \
-	gnupg \
-	gpg-agent               \
-        curl  \
-    && apt-get clean                    \
-    && rm -rf /var/lib/apt/lists/*
-
-# install yarn npm nodejs 
-RUN  mkdir -p /etc/apt/keyrings && \
-     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
-     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
-     apt-get update && \
-     apt-get install -y --no-install-recommends nodejs && \
-     apt-get clean && \
-     rm -rf /var/lib/apt/lists/*
-
-COPY composer /composer
-
-# Add nodejs service
-RUN cd /composer/node/common-libraries && npm install --omit=dev && \
-    cd /composer/node/file-service && npm install --omit=dev && \
-    cd /composer/node/printer-service && npm install --omit=dev
+ARG BASE_IMAGE=ubuntu:22.04
 
 
 # --- START Build image ---
@@ -46,7 +14,7 @@ LABEL vcs-url  "https://github.com/abcdesktopio/oc.cupsd"
 # define env
 ENV DEBCONF_FRONTEND noninteractive
 ENV TERM linux
-ENV NODE_MAJOR=18
+ENV NODE_MAJOR=20
 
 ## 
 # install fonts 
@@ -111,7 +79,12 @@ RUN  mkdir -p /etc/apt/keyrings && \
      apt-get clean && \
      rm -rf /var/lib/apt/lists/*
 
-COPY --from=node_modules_builder /composer  /composer
+COPY composer /composer
+
+# Add nodejs service
+RUN cd /composer/node/common-libraries && npm install --omit=dev && \
+    cd /composer/node/file-service && npm install --omit=dev && \
+    cd /composer/node/printer-service && npm install --omit=dev
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
