@@ -1,10 +1,9 @@
 #!/bin/bash
 
-export ABCDESKTOP_RUN_DIR='/composer/run'
 # export VAR to running procces
 export KUBERNETES_SERVICE_HOST
 
-CONTAINER_IP_ADDR=$(hostname -i)
+CONTAINER_IP_ADDR=$POD_IP
 echo "Container local ip addr is $CONTAINER_IP_ADDR"
 export CONTAINER_IP_ADDR
 
@@ -31,7 +30,8 @@ export DISABLE_REMOTEIP_FILTERING
 export ACCEPTFILE=false
 # denied list file 
 export ACCEPTLISTFILE=false
-
+# denied delete file 
+export ACCEPTDELETEFILE=false
 
 # start supervisord
 /usr/bin/supervisord --pidfile /var/run/desktop/supervisord.pid --nodaemon --configuration /etc/supervisord.conf

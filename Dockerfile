@@ -1,20 +1,61 @@
+# defaul TAG is dev
+ARG TAG=dev
+# Default release is 18.04
+ARG BASE_IMAGE_RELEASE=22.04
 # Default base image 
 ARG BASE_IMAGE=ubuntu:22.04
+
+# --- BEGIN node_modules_builder ---
+FROM $BASE_IMAGE as node_modules_builder
+
+#Install curl
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	software-properties-common \
+	gnupg \
+	gpg-agent \
+        curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV NODE_MAJOR=18
+# install yarn npm nodejs 
+RUN  mkdir -p /etc/apt/keyrings && \
+     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && apt-get update && apt-get install -y --no-install-recommends nodejs && npm -g install yarn
+
+
+COPY composer /composer
+
+# Add nodejs service
+WORKDIR /composer/node/common-libraries
+RUN yarn install --production=true 
+
+WORKDIR /composer/node/file-service
+RUN yarn install --production=true 
+
+WORKDIR /composer/node/printer-service
+RUN yarn install --production=true 
+
 
 
 # --- START Build image ---
 FROM $BASE_IMAGE
-
+# define arg
+# ARG ABCDESKTOP_LOCALACCOUNT_DIR
+ARG TARGET_MODE
+# convert ARG to ENV with same name
+#ENV ABCDESKTOP_LOCALACCOUNT_DIR=$ABCDESKTOP_LOCALACCOUNT_DIR
+ENV NODE_MAJOR=18
 # Add LABELS
 LABEL MAINTAINER="Alexandre DEVELY"
 LABEL vcs-type "git"
 LABEL vcs-url  "https://github.com/abcdesktopio/oc.cupsd"
+LABEL vcs-ref  "3.2"
 
 
 # define env
 ENV DEBCONF_FRONTEND noninteractive
 ENV TERM linux
-ENV NODE_MAJOR=20
 
 ## 
 # install fonts 
@@ -42,7 +83,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	fonts-ipafont-gothic            \
         fonts-wqy-zenhei                \
         fonts-tlwg-loma-otf             \
-	gsfonts-x11			\
         && apt-get clean		\
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -51,8 +91,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # cups-pdf:  pdf printer support
 # smbclient: need to install smb printer
 # cups:      printer support
-#         smbclient
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        smbclient	\
 	cups-pdf 	\
         cups		\
         && apt-get clean\
@@ -66,32 +106,25 @@ RUN apt-get update && apt-get install -y  --no-install-recommends      \
 	gpg-agent		\
         software-properties-common \
 	gnupg			\
+	curl			\
         && apt-get clean	\
 	&& rm -rf /var/lib/apt/lists/*	
 
-# this package nodejs include npm 
-# install nodejs 
+
+# install yarn npm nodejs 
 RUN  mkdir -p /etc/apt/keyrings && \
      curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
-     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
-     apt-get update && \
-     apt-get install -y --no-install-recommends nodejs && \
-     apt-get clean && \
-     rm -rf /var/lib/apt/lists/*
+     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && apt-get update && apt-get install -y --no-install-recommends nodejs 
 
-COPY composer /composer
 
-# Add nodejs service
-RUN cd /composer/node/common-libraries && npm install --omit=dev && \
-    cd /composer/node/file-service && npm install --omit=dev && \
-    cd /composer/node/printer-service && npm install --omit=dev
+# copy js source code and modules
+COPY --from=node_modules_builder /composer  /composer
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
-# Add 
+# Add root to lpadmin
 RUN adduser root lpadmin 
-ENV PRINTERQUEUE=/var/spool/cups-pdf/ANONYMOUS
-RUN mkdir -p $PRINTERQUEUE && chown root:lp $PRINTERQUEUE 
+
 RUN echo `date` > /etc/build.date
 
 # LOG AND PID SECTION
@@ -100,12 +133,13 @@ RUN mkdir -p 	/var/log/desktop                            \
         	/composer/run
 COPY etc /etc
 RUN  chown -R lp:root /etc/cups/ppd /etc/cups/printers.conf
+USER root
 
 CMD /docker-entrypoint.sh
 
-# DEFAULT FILE_SERVICE_TCP_PORT use 29782
-# FILE_SERVICE_TCP_PORT 29782
-# CUPSD PORT 631
+# DEFAULT FILE_SERVICE_TCP_PORT has changed for printer
+# FILE_SERVICE_TCP_PORT 	29782
+
 # expose cupsd tcp port
 EXPOSE 631 29782
 
