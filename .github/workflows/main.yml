@@ -3,7 +3,6 @@ name: Update oc.cupsd
 on:
   repository_dispatch:
     types:
-      - dispatch-from-cups
       - dispatch-from-file-service
       - dispatch-from-printer-service
   push:
@@ -17,24 +16,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Checkout repository file-service
-        uses: actions/checkout@v4
-        with:
-          repository: 'abcdesktopio/file-service'
-          ref: 'main'
-          path: 'composer/node/file-service'
-      - name: Checkout repository oc.user.libraries to common-libraries
-        uses: actions/checkout@v4
-        with:
-          repository: 'abcdesktopio/oc.user.libraries'
-          ref: 'main'
-          path: 'composer/node/common-libraries'
-      - name: Checkout repository printer-service
-        uses: actions/checkout@v4
-        with:
-          repository: 'abcdesktopio/printer-service'
-          ref: 'main'
-          path: 'composer/node/printer-service'
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
