@@ -3,9 +3,9 @@
 # export VAR to running procces
 export KUBERNETES_SERVICE_HOST
 
-CONTAINER_IP_ADDR=$POD_IP
+# Read first $POD_IP if not set get from hostname -i ip address
+export CONTAINER_IP_ADDR=${POD_IP:-$(hostname -i)}
 echo "Container local ip addr is $CONTAINER_IP_ADDR"
-export CONTAINER_IP_ADDR
 
 # replace CONTAINER_IP_ADDR in listen for cupsd
 sed -i "s/localhost:631/$CONTAINER_IP_ADDR:631/g" /etc/cups/cupsd.conf 
@@ -23,9 +23,13 @@ if [ "$DISABLE_REMOTEIP_FILTERING"=="enabled" ]; then
 else
 	DISABLE_REMOTEIP_FILTERING=disabled
 fi
+
 export DISABLE_REMOTEIP_FILTERING
 
-# configure file service
+#
+# configure file service for printer service
+# only download file is allowed
+#
 # denied upload file 
 export ACCEPTFILE=false
 # denied list file 
