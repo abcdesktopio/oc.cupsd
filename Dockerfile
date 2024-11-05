@@ -1,72 +1,49 @@
-# defaul TAG is dev
-ARG TAG=dev
-# Default release is 18.04
-ARG BASE_IMAGE_RELEASE=22.04
-# Default base image 
-ARG BASE_IMAGE=ubuntu:22.04
+FROM node:20
+ARG ABCDESKTOP_LOCALACCOUNT_DIR=/etc/localaccount
+ENV ABCDESKTOP_LOCALACCOUNT_DIR=$ABCDESKTOP_LOCALACCOUNT_DIR
+# default branch
+ARG BRANCH=3.3
+ENV BRANCH=$BRANCH
 
-# --- BEGIN node_modules_builder ---
-FROM $BASE_IMAGE as node_modules_builder
+##Install curl
+#RUN apt-get update && apt-get install -y --no-install-recommends \
+#	software-properties-common \
+#	gnupg \
+#	gpg-agent \
+#        git \
+#	curl \
+#    && apt-get clean \
+#    && rm -rf /var/lib/apt/lists/*
 
-#Install curl
-RUN apt-get update && apt-get install -y --no-install-recommends \
-	software-properties-common \
-	gnupg \
-	gpg-agent \
-        curl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+#ENV NODE_MAJOR=20
+## install yarn npm nodejs 
+#RUN  mkdir -p /etc/apt/keyrings && \
+#     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+#     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && apt-get update && apt-get install -y --no-install-recommends nodejs
 
-ENV NODE_MAJOR=18
-# install yarn npm nodejs 
-RUN  mkdir -p /etc/apt/keyrings && \
-     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
-     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && apt-get update && apt-get install -y --no-install-recommends nodejs && npm -g install yarn
+# copy file-service repo to /composer/node
+RUN mkdir -p /composer/node/file-service && \
+    git clone -b $BRANCH https://github.com/abcdesktopio/file-service.git /composer/node/file-service
+# copy printer-service repo to /composer/node
+RUN mkdir -p /composer/node/printer-service && \
+    git clone -b $BRANCH https://github.com/abcdesktopio/printer-service.git /composer/node/printer-service
 
-
-COPY composer /composer
-
-# Add nodejs service
-WORKDIR /composer/node/common-libraries
-RUN yarn install --production=true 
-
+# Add nodejs file-service and dep
 WORKDIR /composer/node/file-service
-RUN yarn install --production=true 
+RUN npm install --save-prod
 
+# Add nodejs printer-service and dep
 WORKDIR /composer/node/printer-service
-RUN yarn install --production=true 
+RUN npm install --save-prod
 
-
-
-# --- START Build image ---
-FROM $BASE_IMAGE
-# define arg
-# ARG ABCDESKTOP_LOCALACCOUNT_DIR
-ARG TARGET_MODE
-# convert ARG to ENV with same name
-#ENV ABCDESKTOP_LOCALACCOUNT_DIR=$ABCDESKTOP_LOCALACCOUNT_DIR
-ENV NODE_MAJOR=18
-# Add LABELS
-LABEL MAINTAINER="Alexandre DEVELY"
-LABEL vcs-type "git"
-LABEL vcs-url  "https://github.com/abcdesktopio/oc.cupsd"
-LABEL vcs-ref  "3.2"
-
-
-# define env
-ENV DEBCONF_FRONTEND noninteractive
-ENV TERM linux
-
-## 
 # install fonts 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+	fonts-recommended		\
 	xfonts-base			\
         xfonts-encodings                \
         xfonts-utils                    \
 	xfonts-100dpi			\
 	xfonts-75dpi			\
-	xfonts-cyrillic			\
-        ubuntustudio-fonts              \
    	libfontconfig 			\
     	libfreetype6 			\
         fonts-freefont-ttf		\
@@ -80,9 +57,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         fonts-sil-mondulkiri            \
         fonts-unfonts-core              \
         fonts-wqy-microhei              \
-	fonts-ipafont-gothic            \
-        fonts-wqy-zenhei                \
-        fonts-tlwg-loma-otf             \
         && apt-get clean		\
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -92,39 +66,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # smbclient: need to install smb printer
 # cups:      printer support
 RUN apt-get update && apt-get install -y --no-install-recommends \
+	supervisor      \
         smbclient	\
 	cups-pdf 	\
         cups		\
         && apt-get clean\
 	&& rm -rf /var/lib/apt/lists/*
 
-# apt install iproute2 install ip command
-# install supervisor
-RUN apt-get update && apt-get install -y  --no-install-recommends      \
-	supervisor		\
-	curl			\
-	gpg-agent		\
-        software-properties-common \
-	gnupg			\
-	curl			\
-        && apt-get clean	\
-	&& rm -rf /var/lib/apt/lists/*	
-
-
-# install yarn npm nodejs 
-RUN  mkdir -p /etc/apt/keyrings && \
-     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
-     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && apt-get update && apt-get install -y --no-install-recommends nodejs 
-
-
-# copy js source code and modules
-COPY --from=node_modules_builder /composer  /composer
+## apt install iproute2 install ip command
+## install supervisor
+#RUN apt-get update && apt-get install -y  --no-install-recommends      \
+#	supervisor		\
+#	curl			\
+#	gpg-agent		\
+#        software-properties-common \
+#	gnupg			\
+#	curl			\
+#        && apt-get clean	\
+#	&& rm -rf /var/lib/apt/lists/*	
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 # Add root to lpadmin
 RUN adduser root lpadmin 
-
 RUN echo `date` > /etc/build.date
 
 # LOG AND PID SECTION
@@ -133,13 +97,12 @@ RUN mkdir -p 	/var/log/desktop                            \
         	/composer/run
 COPY etc /etc
 RUN  chown -R lp:root /etc/cups/ppd /etc/cups/printers.conf
+
+
 USER root
-
+WORKDIR /
 CMD /docker-entrypoint.sh
-
 # DEFAULT FILE_SERVICE_TCP_PORT has changed for printer
 # FILE_SERVICE_TCP_PORT 	29782
-
-# expose cupsd tcp port
+# expose cupsd tcp port		631
 EXPOSE 631 29782
-
