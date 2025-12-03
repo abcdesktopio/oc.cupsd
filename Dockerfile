@@ -1,6 +1,5 @@
 FROM node:20
-ARG ABCDESKTOP_LOCALACCOUNT_DIR=/etc/localaccount
-ENV ABCDESKTOP_LOCALACCOUNT_DIR=$ABCDESKTOP_LOCALACCOUNT_DIR
+
 # default branch
 ARG BRANCH=4.0
 ENV BRANCH=$BRANCH
@@ -22,37 +21,37 @@ RUN npm install --save-prod
 
 # install fonts 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	fonts-recommended		\
-	xfonts-base			\
-        xfonts-encodings                \
-        xfonts-utils                    \
-	xfonts-100dpi			\
-	xfonts-75dpi			\
-   	libfontconfig 			\
-    	libfreetype6 			\
-        fonts-freefont-ttf		\
-  	fonts-croscore                  \
-        fonts-dejavu-core               \
-        fonts-horai-umefont             \
-        fonts-noto                      \
-        fonts-opendyslexic              \
-        fonts-roboto                    \
-        fonts-roboto-hinted             \
-        fonts-sil-mondulkiri            \
-        fonts-unfonts-core              \
-        fonts-wqy-microhei              \
-        && apt-get clean		\
+	fonts-recommended \
+	xfonts-base	\
+    xfonts-encodings \
+    xfonts-utils \
+	xfonts-100dpi \
+	xfonts-75dpi \
+   	libfontconfig \
+    libfreetype6 \
+    fonts-freefont-ttf \
+  	fonts-croscore \
+    fonts-dejavu-core \
+    fonts-horai-umefont \
+    fonts-noto \
+    fonts-opendyslexic \
+    fonts-roboto \
+    fonts-roboto-hinted \
+    fonts-sil-mondulkiri \
+    fonts-unfonts-core \
+    fonts-wqy-microhei \
+    && apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
 # cups-pdf:  pdf printer support
 # smbclient: need to install smb printer
 # cups:      printer support
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	supervisor      \
-        smbclient	\
-	cups-pdf 	\
-        cups		\
-        && apt-get clean\
+	supervisor \
+    smbclient \
+	cups-pdf \
+    cups \
+    && apt-get clean\
 	&& rm -rf /var/lib/apt/lists/*
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
@@ -62,9 +61,7 @@ RUN adduser root lpadmin
 RUN echo `date` > /etc/build.date
 
 # LOG AND PID SECTION
-RUN mkdir -p 	/var/log/desktop                            \
-        	/var/run/desktop                            \
-        	/composer/run
+RUN mkdir -p /var/log/desktop /var/run/desktop /composer/run
 COPY etc /etc
 RUN  chown -R lp:root /etc/cups/ppd /etc/cups/printers.conf
 
