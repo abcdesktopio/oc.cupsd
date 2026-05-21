@@ -303,3 +303,4 @@ An implementation conforming to this Dockerfile must:
 * [etc/cups/cupsd.conf](etc/cups/cupsd.conf)
 * [etc/cups/cups-files.conf](etc/cups/cups-files.conf)
 * [etc/cups/cups-pdf.conf](etc/cups/cups-pdf.conf)
+ 
